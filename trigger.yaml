@@ -1,0 +1,13 @@
+autodetect: true
+createTime: '2025-06-02T02:50:34.951175326Z'
+github:
+  name: go-simpleapp
+  owner: novrian6
+  push:
+    branch: ^master$
+id: bc6c244a-cb12-418c-98c4-760729f1db5a
+name: rakamin-goapp-trigger
+resourceName: projects/rakamin-ttc-odp-it-bni/locations/global/triggers/bc6c244a-cb12-418c-98c4-760729f1db5a
+serviceAccount: projects/rakamin-ttc-odp-it-bni/serviceAccounts/286520492211-compute@developer.gserviceaccount.com
+build:
+  logsBucket: gs://rakamin-build-logs
