@@ -11,6 +11,10 @@ func main() {
 	r := gin.Default()
 
 	// Route for GET /ping
+        r.GET("/", func(c *gin.Context) {
+                c.String(http.StatusOK, "Welcome from Homescreen!")
+        })
+	// Route for GET /ping
 	r.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
 	})
