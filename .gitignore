@@ -1,3 +1,7 @@
 # Ignore GitHub Actions service account key
-gha-creds.json
-key.json
+
+# Ignore all .json files in the root directory
+/*.json
+
+# Ignore the 'json' folder at root level
+/json/
