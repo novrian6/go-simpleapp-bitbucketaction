@@ -1,2 +1,3 @@
 # Ignore GitHub Actions service account key
 gha-creds.json
+key.json
