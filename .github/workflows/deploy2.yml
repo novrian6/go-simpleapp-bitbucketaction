@@ -1,5 +1,6 @@
 name: CI/CD to Google Cloud Run
 
+
 on:
   push:
     branches:
@@ -25,20 +26,34 @@ jobs:
           install_components: 'beta'
 
       - name: Authenticate Docker with Artifact Registry
-        run: gcloud auth configure-docker ${{ secrets.GCP_REGION }}-docker.pkg.dev
+        run: |
+          REGION="${{ secrets.GCP_REGION }}"
+          gcloud auth configure-docker "${REGION}-docker.pkg.dev"
 
       - name: Build and Push Docker Image
+        env:
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          GCP_REGION: ${{ secrets.GCP_REGION }}
+          ARTIFACT_REPO_NAME: ${{ secrets.ARTIFACT_REPO_NAME }}
+          CLOUD_RUN_SERVICE: ${{ secrets.CLOUD_RUN_SERVICE }}
         run: |
-          IMAGE_URI=${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.ARTIFACT_REPO_NAME }}/${{ secrets.CLOUD_RUN_SERVICE }}:$GITHUB_SHA
-          docker build -t $IMAGE_URI .
-          docker push $IMAGE_URI
+          IMAGE_URI="${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT_ID}/${ARTIFACT_REPO_NAME}/${CLOUD_RUN_SERVICE}:${GITHUB_SHA}"
+          echo "Using image URI: $IMAGE_URI"
+          docker build -t "$IMAGE_URI" .
+          docker push "$IMAGE_URI"
 
       - name: Deploy to Cloud Run
+        env:
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          GCP_REGION: ${{ secrets.GCP_REGION }}
+          CLOUD_RUN_SERVICE: ${{ secrets.CLOUD_RUN_SERVICE }}
+          ARTIFACT_REPO_NAME: ${{ secrets.ARTIFACT_REPO_NAME }}
         run: |
-          IMAGE_URI=${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.ARTIFACT_REPO_NAME }}/${{ secrets.CLOUD_RUN_SERVICE }}:$GITHUB_SHA
-          gcloud run deploy ${{ secrets.CLOUD_RUN_SERVICE }} \
-            --image $IMAGE_URI \
-            --region ${{ secrets.GCP_REGION }} \
+          IMAGE_URI="${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT_ID}/${ARTIFACT_REPO_NAME}/${CLOUD_RUN_SERVICE}:${GITHUB_SHA}"
+          echo "Deploying image: $IMAGE_URI"
+          gcloud run deploy "${CLOUD_RUN_SERVICE}" \
+            --image "$IMAGE_URI" \
+            --region "${GCP_REGION}" \
             --platform managed \
             --allow-unauthenticated \
-            --project ${{ secrets.GCP_PROJECT_ID }}
+            --project "${GCP_PROJECT_ID}"
