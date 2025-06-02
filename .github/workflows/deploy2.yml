@@ -24,8 +24,11 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           install_components: 'beta'
 
+     
       - name: Authenticate Docker with Artifact Registry
-        run: gcloud auth configure-docker ${{ secrets.GCP_REGION }}-docker.pkg.dev
+        run: |
+          REGION=${{ secrets.GCP_REGION }}
+          gcloud auth configure-docker "$REGION-docker.pkg.dev"
 
       - name: Build and Push Docker Image
         run: |
