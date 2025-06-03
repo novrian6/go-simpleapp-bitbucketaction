@@ -34,7 +34,7 @@ func main() {
 	r.GET("/welcome", func(c *gin.Context) {
 		firstName := c.Query("first_name")
 		lastName := c.Query("last_name")
-		c.String(http.StatusOK, fmt.Sprintf("Welcome Aboard!, %s %s", firstName, lastName))
+		c.String(http.StatusOK, fmt.Sprintf("Welcome Aboard!!!, %s %s", firstName, lastName))
 	})
 
 	// Route for POST /form_post with input text named "message"
